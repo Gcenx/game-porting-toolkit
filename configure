@@ -950,6 +950,9 @@ enable_amstream
 enable_apisetschema
 enable_apphelp
 enable_appwiz_cpl
+enable_atiadlxx
+enable_api_ms_win_core_psm_appnotify_l1_1_0
+enable_api_ms_win_power_base_l1_1_0
 enable_atl
 enable_atl100
 enable_atl110
@@ -1421,6 +1424,7 @@ enable_wimgapi
 enable_win32u
 enable_windows_devices_enumeration
 enable_windows_gaming_input
+enable_windows_gaming_ui_gamebar
 enable_windows_globalization
 enable_windows_media_devices
 enable_windows_media_speech
@@ -21776,6 +21780,9 @@ wine_fn_config_makefile dlls/apisetschema enable_apisetschema
 wine_fn_config_makefile dlls/apphelp enable_apphelp
 wine_fn_config_makefile dlls/apphelp/tests enable_tests
 wine_fn_config_makefile dlls/appwiz.cpl enable_appwiz_cpl
+wine_fn_config_makefile dlls/atiadlxx enable_atiadlxx
+wine_fn_config_makefile dlls/api-ms-win-core-psm-appnotify-l1-1-0 enable_api_ms_win_core_psm_appnotify_l1_1_0
+wine_fn_config_makefile dlls/api-ms-win-power-base-l1-1-0 enable_api_ms_win_power_base_l1_1_0
 wine_fn_config_makefile dlls/atl enable_atl
 wine_fn_config_makefile dlls/atl/tests enable_tests
 wine_fn_config_makefile dlls/atl100 enable_atl100
@@ -22525,6 +22532,8 @@ wine_fn_config_makefile dlls/windebug.dll16 enable_win16
 wine_fn_config_makefile dlls/windows.devices.enumeration enable_windows_devices_enumeration
 wine_fn_config_makefile dlls/windows.gaming.input enable_windows_gaming_input
 wine_fn_config_makefile dlls/windows.gaming.input/tests enable_tests
+wine_fn_config_makefile dlls/windows.gaming.ui.gamebar enable_windows_gaming_ui_gamebar 
+wine_fn_config_makefile dlls/windows.gaming.ui.gamebar/tests enable_tests
 wine_fn_config_makefile dlls/windows.globalization enable_windows_globalization
 wine_fn_config_makefile dlls/windows.globalization/tests enable_tests
 wine_fn_config_makefile dlls/windows.media.devices enable_windows_media_devices
