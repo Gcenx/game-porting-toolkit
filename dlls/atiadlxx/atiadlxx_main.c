@@ -63,6 +63,14 @@ typedef void *ADL_CONTEXT_HANDLE;
 ADL_MAIN_MALLOC_CALLBACK adl_malloc;
 #define ADL_MAX_PATH 256
 
+typedef struct ADLDDCInfo2 {
+
+} ADLDDCInfo2;
+
+typedef struct ADLFreeSyncCap {
+
+} ADLFreeSyncCap;
+
 typedef struct ADLVersionsInfo
 {
     char strDriverVer[ADL_MAX_PATH];
@@ -95,6 +103,26 @@ typedef struct ADLAdapterInfo {
     char strPNPString[ADL_MAX_PATH];
     int iOSDisplayIndex;
 } ADLAdapterInfo, *LPADLAdapterInfo;
+
+typedef struct ADLAdapterInfoX2 { //Matches ADLAdapterInfo until iInfoMask
+    int iSize;
+    int iAdapterIndex;
+    char strUDID[ADL_MAX_PATH];
+    int iBusNumber;
+    int iDeviceNumber;
+    int iFunctionNumber;
+    int iVendorID;
+    char strAdapterName[ADL_MAX_PATH];
+    char strDisplayName[ADL_MAX_PATH];
+    int iPresent;
+    int iExist;
+    char strDriverPath[ADL_MAX_PATH];
+    char strDriverPathExt[ADL_MAX_PATH];
+    char strPNPString[ADL_MAX_PATH];
+    int iOSDisplayIndex;
+    int iInfoMask;
+    int iInfoValue;
+} ADLAdapterInfoX2, *LPADLAdapterInfoX2;
 
 typedef struct ADLDisplayID
 {
@@ -136,6 +164,16 @@ typedef struct ADLMemoryInfo
     char strMemoryType[ADL_MAX_PATH];
     long long iMemoryBandwidth;
 } ADLMemoryInfo, *LPADLMemoryInfo;
+
+typedef struct ADLMemoryInfo2
+{
+    long long iHyperMemorySize;
+    long long iInvisibleMemorySize;
+    long long iMemoryBandwidth;
+    long long iMemorySize;
+    long long iVisibleMemorySize;
+    char strMemoryType[ADL_MAX_PATH];
+} ADLMemoryInfo2, *LPADLMemoryInfo2;
 
 typedef struct ADLDisplayTarget
 {
@@ -188,6 +226,25 @@ typedef struct ADLGraphicInfoCore
     int iNumSIMDs;
     int iReserved[11];
 } ADLGraphicInfoCore, *LPADLGraphicInfoCore;
+
+typedef struct ADLODParameterRange
+{
+   int iMin;
+   int iMax;
+   int iStep;
+} ADLODParameterRange;
+  
+typedef struct ADLODParameters
+{
+   int iSize;
+   int iNumberOfPerformanceLevels;
+   int iActivityReportingSupported;
+   int iDiscretePerformanceLevels;
+   int iReserved;
+   ADLODParameterRange sEngineClock;
+   ADLODParameterRange sMemoryClock;
+   ADLODParameterRange sVddc;
+} ADLODParameters;
 
 static const ADLVersionsInfo version = {
     "22.20.19.16-221003a-384125E-AMD-Software-Adrenalin-Edition",
@@ -323,17 +380,40 @@ int WINAPI ADL2_Display_EdidData_Get(int adapter_index, int display_index, void*
     return ADL_ERR_NOT_SUPPORTED;
 }
 
-int WINAPI ADL2_Adapter_AdapterInfoX2_Get(ADL_CONTEXT_HANDLE* ptr, ADLAdapterInfo **adapters)
+int WINAPI ADL2_Adapter_AdapterInfoX2_Get(ADL_CONTEXT_HANDLE handle, ADLAdapterInfo **adapters)
 {
-    TRACE("\n");
+    FIXME("stub!\n");
     *adapters = (ADLAdapterInfo*)adl_malloc(sizeof(ADLAdapterInfo) * 1);
     return ADL_Adapter_AdapterInfo_Get(*adapters, sizeof(ADLAdapterInfo) * 1);
 }
 
-int WINAPI ADL2_Adapter_AdapterInfo_Get(ADL_CONTEXT_HANDLE* ptr, ADLAdapterInfo *adapters, int bufferSize)
+int WINAPI ADL2_Adapter_AdapterInfoX4_Get(ADL_CONTEXT_HANDLE handle, int adapter_index, int *num_adapters, ADLAdapterInfoX2 **info)
 {
-    TRACE("\n");
+    int status;
+    FIXME("adapter: %u, stub!\n", adapter_index);
+    if (adapter_index == -1)
+    {
+        adapter_index = 0;
+    }
+    if (num_adapters)
+    {
+        *num_adapters = 1;
+    }
+    *info = (ADLAdapterInfoX2*)adl_malloc(sizeof(ADLAdapterInfoX2) * 1);
+    memset(*info, 0, sizeof(ADLAdapterInfoX2));
+    status = ADL_Adapter_AdapterInfo_Get(*info, sizeof(ADLAdapterInfo));
+    if (status == ADL_OK)
+    {
+        info[0]->iInfoMask = 1; 
+        info[0]->iInfoValue = 1;
+    }
+    return status;
+}
+
+int WINAPI ADL2_Adapter_AdapterInfo_Get(ADL_CONTEXT_HANDLE handle, ADLAdapterInfo *adapters, int bufferSize)
+{
     ADLAdapterInfo adapterInfo;
+    TRACE("stub!");
     ADL_Adapter_AdapterInfo_Get(&adapterInfo, sizeof(ADLAdapterInfo));
     if (bufferSize <= sizeof(ADLAdapterInfo))
     {
@@ -346,7 +426,7 @@ int WINAPI ADL2_Adapter_AdapterInfo_Get(ADL_CONTEXT_HANDLE* ptr, ADLAdapterInfo 
 
 int WINAPI ADL_Adapter_AdapterInfo_Get(ADLAdapterInfo *adapters, int input_size)
 {
-    int count, i;
+    int count, i, j;
     DXGI_ADAPTER_DESC adapter_desc;
 
     FIXME("adapters %p, input_size %d, stub!\n", adapters, input_size);
@@ -367,6 +447,13 @@ int WINAPI ADL_Adapter_AdapterInfo_Get(ADLAdapterInfo *adapters, int input_size)
             return ADL_ERR;
 
         adapters[i].iVendorID = convert_vendor_id(adapter_desc.VendorId);
+
+        for (j = 0; j < 128; ++j)
+        {
+            adapters[i].strAdapterName[j] = (char)adapter_desc.Description[j];
+            if (adapters[i].strAdapterName[j] == 0)
+               break;
+        }
     }
 
     return ADL_OK;
@@ -411,6 +498,12 @@ int WINAPI ADL_Display_DisplayInfo_Get(int adapter_index, int *num_displays, ADL
     return ADL_OK;
 }
 
+int WINAPI ADL2_Display_DisplayInfo_Get(ADL_CONTEXT_HANDLE context, int adapter_index, int *num_displays, ADLDisplayInfo **info, int force_detect)
+{
+    FIXME("adapter: %d, stub!\n", adapter_index);
+    return ADL_Display_DisplayInfo_Get(adapter_index, num_displays, info, force_detect);    
+}
+
 int WINAPI ADL_Adapter_Crossfire_Caps(int adapter_index, int *preffered, int *num_comb, ADLCrossfireComb** comb)
 {
     FIXME("adapter %d, preffered %p, num_comb %p, comb %p stub!\n", adapter_index, preffered, num_comb, comb);
@@ -442,6 +535,12 @@ int WINAPI ADL_Adapter_ASICFamilyType_Get(int adapter_index, int *asic_type, int
     *valids = ADL_ASIC_MASK;
 
     return ADL_OK;
+}
+
+int WINAPI ADL2_Adapter_ASICFamilyType_Get(ADL_CONTEXT_HANDLE handle, int adapter_index, int *asic_types, int *valids)
+{
+    FIXME("adapter_index: %u, stub!\n", adapter_index);
+    return ADL_Adapter_ASICFamilyType_Get(adapter_index, asic_types, valids);
 }
 
 static int get_max_clock(const char *clock, int default_value)
@@ -501,6 +600,23 @@ int WINAPI ADL_Adapter_ObservedClockInfo_Get(int adapter_index, int *core_clock,
     return ADL_OK;
 }
 
+int WINAPI ADL_Adapter_ObservedGameClockInfo_Get(ADL_CONTEXT_HANDLE context, int adapter_index, int* base_clock, int* game_clock, int* boost_clock, int* memory_clock)
+{
+    int retStatus;
+    FIXME("adapter: %d, stub!\n", adapter_index);
+    retStatus = ADL_Adapter_ObservedClockInfo_Get(adapter_index, base_clock, memory_clock);
+    if (retStatus == ADL_OK)
+    {
+        *game_clock = *base_clock;
+        *boost_clock = *base_clock;
+
+        TRACE("*base_clock: %i, *game_clock: %i, *boost_clock: %i, *memory_clock: %i\n", 
+                *base_clock, *game_clock, *boost_clock, *memory_clock);
+    }
+    return retStatus;
+}
+
+
 /* documented in the "Linux Specific APIs" section, present and used on Windows */
 int WINAPI ADL_Adapter_MemoryInfo_Get(int adapter_index, ADLMemoryInfo *mem_info)
 {
@@ -519,6 +635,31 @@ int WINAPI ADL_Adapter_MemoryInfo_Get(int adapter_index, ADLMemoryInfo *mem_info
             wine_dbgstr_longlong(mem_info->iMemoryBandwidth),
             wine_dbgstr_longlong(mem_info->iMemorySize));
     return ADL_OK;
+}
+
+int WINAPI ADL2_Adapter_MemoryInfo_Get(ADL_CONTEXT_HANDLE context, int adapter_index, ADLMemoryInfo *mem_info)
+{
+    FIXME("adapter %d, stub!\n", adapter_index);
+    return ADL_Adapter_MemoryInfo_Get(adapter_index, mem_info);
+}
+
+int WINAPI ADL2_Adapter_MemoryInfo2_Get(ADL_CONTEXT_HANDLE context, int adapter_index, ADLMemoryInfo2 *mem_info)
+{
+    ADLMemoryInfo meminfo1;
+    int status;
+    FIXME("adapter %d, stub!\n", adapter_index);
+    
+    status = ADL2_Adapter_MemoryInfo_Get(context, adapter_index, &meminfo1);
+    if (status == ADL_OK)
+    {
+        mem_info->iHyperMemorySize = 0;
+        mem_info->iInvisibleMemorySize = 0;
+        mem_info->iMemoryBandwidth = meminfo1.iMemoryBandwidth;
+        mem_info->iMemorySize = meminfo1.iMemorySize;
+        mem_info->iVisibleMemorySize = mem_info->iMemorySize;
+        memcpy(mem_info->strMemoryType, meminfo1.strMemoryType, ADL_MAX_PATH);
+    }
+    return status;
 }
 
 int WINAPI ADL_Adapter_Primary_Get(int* adapter_index)
@@ -565,12 +706,47 @@ int WINAPI ADL_Display_DisplayMapConfig_Get(int adapter_index, int *display_map_
             adapter_index, display_map_count, display_maps, display_target_count,
             display_targets, options);
 
-    return ADL_ERR;
+    return ADL_ERR_NOT_SUPPORTED;
+}
+
+int WINAPI ADL2_Display_DisplayMapConfig_Get(ADL_CONTEXT_HANDLE context, int adapter_index, int *display_map_count, ADLDisplayMap **display_maps,
+        int *display_target_count, ADLDisplayTarget **display_targets, int options)
+{
+    FIXME("adapter_index %d, stub!\n", adapter_index);
+    return ADL_Display_DisplayMapConfig_Get(adapter_index, display_map_count, display_maps, display_target_count, display_targets, options);
 }
 
 int WINAPI ADL_Display_EdidData_Get(int adapter_index, int display_index, void* edid_data)
 {
     FIXME("adapter_index %d, display_index %p, edid_data %p\n", 
         adapter_index, display_index, edid_data);
+    return ADL_ERR_NOT_SUPPORTED;
+}
+
+int WINAPI ADL2_Display_Modes_Get(ADL_CONTEXT_HANDLE context, int adapter_index, int display_index, int *num_modes, ADLMode *modes)
+{
+    FIXME("adapter: %d, display: %d, stub!\n", adapter_index, display_index);
+    return ADL_ERR_NOT_SUPPORTED;
+}
+
+int WINAPI ADL2_Display_DDCInfo2_Get(ADL_CONTEXT_HANDLE context, int adapter_index, int display_index, ADLDDCInfo2 *info)
+{
+    FIXME("adapter: %d, display: %d, stub!\n", adapter_index, display_index);
+    return ADL_ERR_NOT_SUPPORTED;
+}
+
+int WINAPI ADL2_Display_FreeSync_Cap(ADL_CONTEXT_HANDLE context, int adapter_index, int display_index, ADLFreeSyncCap *cap)
+{
+    FIXME("adapter: %d, display: %d, stub!\n", adapter_index, display_index);
+    return ADL_ERR_NOT_SUPPORTED;
+}
+
+int WINAPI ADL_Overdrive5_ODParameters_Get(int iAdapterIndex, ADLODParameters *lpOdParameters)
+{
+    return ADL_ERR_NOT_SUPPORTED;
+}
+
+int WINAPI ADL2_Overdrive5_ODParameters_Get(ADL_CONTEXT_HANDLE context, int iAdapterIndex, ADLODParameters *lpOdParameters)
+{
     return ADL_ERR_NOT_SUPPORTED;
 }

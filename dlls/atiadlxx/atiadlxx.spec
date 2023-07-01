@@ -10,17 +10,17 @@
 @ stub ADL2_AdapterLimitation_Caps
 @ stub ADL2_AdapterX2_Caps
 @ stub ADL2_Adapter_AMDAndNonAMDDIsplayClone_Get
-@ stub ADL2_Adapter_ASICFamilyType_Get
+@ stdcall ADL2_Adapter_ASICFamilyType_Get(long long ptr ptr)
 @ stub ADL2_Adapter_ASICInfo_Get
 @ stub ADL2_Adapter_Accessibility_Get
 @ stub ADL2_Adapter_AceDefaults_Restore
 @ stub ADL2_Adapter_Active_Get
 @ stub ADL2_Adapter_Active_Set
 @ stub ADL2_Adapter_Active_SetPrefer
-@ stdcall ADL2_Adapter_AdapterInfoX2_Get(ptr ptr)
+@ stdcall ADL2_Adapter_AdapterInfoX2_Get(long ptr)
 @ stub ADL2_Adapter_AdapterInfoX3_Get
-@ stub ADL2_Adapter_AdapterInfoX4_Get
-@ stdcall ADL2_Adapter_AdapterInfo_Get(ptr ptr long)
+@ stdcall ADL2_Adapter_AdapterInfoX4_Get(long long ptr ptr)
+@ stdcall ADL2_Adapter_AdapterInfo_Get(long ptr long)
 @ stub ADL2_Adapter_AdapterList_Disable
 @ stub ADL2_Adapter_AdapterLocationPath_Get
 @ stub ADL2_Adapter_Aspects_Get
@@ -93,8 +93,8 @@
 @ stub ADL2_Adapter_LocalDisplayState_Get
 @ stub ADL2_Adapter_MVPU_Set
 @ stub ADL2_Adapter_MaxCursorSize_Get
-@ stub ADL2_Adapter_MemoryInfo2_Get
-@ stub ADL2_Adapter_MemoryInfo_Get
+@ stdcall ADL2_Adapter_MemoryInfo2_Get(long long ptr)
+@ stdcall ADL2_Adapter_MemoryInfo_Get(ptr long ptr)
 @ stub ADL2_Adapter_MirabilisSupport_Get
 @ stub ADL2_Adapter_ModeSwitch
 @ stub ADL2_Adapter_ModeTimingOverride_Caps
@@ -249,7 +249,7 @@
 @ stub ADL2_Display_DCE_Get
 @ stub ADL2_Display_DCE_Set
 @ stub ADL2_Display_DDCBlockAccess_Get
-@ stub ADL2_Display_DDCInfo2_Get
+@ stdcall ADL2_Display_DDCInfo2_Get(ptr long long ptr)
 @ stub ADL2_Display_DDCInfo_Get
 @ stub ADL2_Display_Deflicker_Get
 @ stub ADL2_Display_Deflicker_Set
@@ -257,9 +257,9 @@
 @ stub ADL2_Display_DisplayContent_Cap
 @ stub ADL2_Display_DisplayContent_Get
 @ stub ADL2_Display_DisplayContent_Set
-@ stub ADL2_Display_DisplayInfo_Get
+@ stdcall ADL2_Display_DisplayInfo_Get(ptr long ptr ptr long)
 @ stub ADL2_Display_DisplayMapConfigX2_Set
-@ stub ADL2_Display_DisplayMapConfig_Get
+@ stdcall ADL2_Display_DisplayMapConfig_Get(ptr long ptr ptr ptr ptr long)
 @ stub ADL2_Display_DisplayMapConfig_PossibleAddAndRemove
 @ stub ADL2_Display_DisplayMapConfig_Set
 @ stub ADL2_Display_DisplayMapConfig_Validate
@@ -281,7 +281,7 @@
 @ stub ADL2_Display_FormatsOverride_Set
 @ stub ADL2_Display_FreeSyncState_Get
 @ stub ADL2_Display_FreeSyncState_Set
-@ stub ADL2_Display_FreeSync_Cap
+@ stdcall ADL2_Display_FreeSync_Cap(ptr long long ptr)
 @ stub ADL2_Display_GamutMapping_Get
 @ stub ADL2_Display_GamutMapping_Reset
 @ stub ADL2_Display_GamutMapping_Set
@@ -315,7 +315,7 @@
 @ stub ADL2_Display_ModeTimingOverride_Delete
 @ stub ADL2_Display_ModeTimingOverride_Get
 @ stub ADL2_Display_ModeTimingOverride_Set
-@ stub ADL2_Display_Modes_Get
+@ stdcall ADL2_Display_Modes_Get(ptr long long ptr ptr)
 @ stub ADL2_Display_Modes_Set
 @ stub ADL2_Display_Modes_X2_Get
 @ stub ADL2_Display_MonitorPowerState_Set
@@ -464,7 +464,7 @@
 @ stub ADL2_Overdrive5_FanSpeedToDefault_Set
 @ stub ADL2_Overdrive5_FanSpeed_Get
 @ stub ADL2_Overdrive5_FanSpeed_Set
-@ stub ADL2_Overdrive5_ODParameters_Get
+@ stdcall ADL2_Overdrive5_ODParameters_Get(ptr long ptr)
 @ stub ADL2_Overdrive5_ODPerformanceLevels_Get
 @ stub ADL2_Overdrive5_ODPerformanceLevels_Set
 @ stub ADL2_Overdrive5_PowerControlAbsValue_Caps
@@ -744,7 +744,7 @@
 @ stub ADL_Adapter_NumberOfActivatableSources_Get
 @ stdcall ADL_Adapter_NumberOfAdapters_Get(ptr)
 @ stdcall ADL_Adapter_ObservedClockInfo_Get(long ptr ptr)
-@ stub ADL_Adapter_ObservedGameClockInfo_Get
+@ stdcall ADL_Adapter_ObservedGameClockInfo_Get(ptr long ptr ptr ptr ptr)
 @ stdcall ADL_Adapter_Primary_Get(long)
 @ stub ADL_Adapter_Primary_Set
 @ stub ADL_Adapter_RegValueInt_Get
@@ -997,7 +997,7 @@
 @ stub ADL_Overdrive5_FanSpeedToDefault_Set
 @ stub ADL_Overdrive5_FanSpeed_Get
 @ stub ADL_Overdrive5_FanSpeed_Set
-@ stub ADL_Overdrive5_ODParameters_Get
+@ stdcall ADL_Overdrive5_ODParameters_Get(long ptr)
 @ stub ADL_Overdrive5_ODPerformanceLevels_Get
 @ stub ADL_Overdrive5_ODPerformanceLevels_Set
 @ stub ADL_Overdrive5_PowerControlAbsValue_Caps
