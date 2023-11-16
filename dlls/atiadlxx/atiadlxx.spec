@@ -433,7 +433,7 @@
 @ stub ADL2_Graphics_MantleVersion_Get
 @ stub ADL2_Graphics_Platform_Get
 @ stdcall ADL2_Graphics_VersionsX2_Get(ptr ptr)
-@ stub ADL2_Graphics_Versions_Get
+@ stdcall ADL2_Graphics_Versions_Get(ptr ptr)
 @ stub ADL2_Graphics_VulkanVersion_Get
 @ stub ADL2_HybridGraphicsGPU_Set
 @ stub ADL2_MGPUSLS_Status_Set

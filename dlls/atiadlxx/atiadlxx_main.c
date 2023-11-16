@@ -316,6 +316,11 @@ int WINAPI ADL_Graphics_Versions_Get(ADLVersionsInfo *ver)
     return ADL_OK;
 }
 
+int WINAPI ADL2_Graphics_Versions_Get(ADL_CONTEXT_HANDLE *ptr, ADLVersionsInfo *ver)
+{
+    return ADL_Graphics_Versions_Get(ver);
+}
+
 int WINAPI ADL2_Adapter_Graphic_Core_Info_Get(ADL_CONTEXT_HANDLE *ptr, int iAdapterIndex, LPADLGraphicInfoCore pGraphicsInfo)
 {
     FIXME("ptr %p, iAdapterIndex %u, pGraphicsInfo %p\n", ptr, iAdapterIndex, pGraphicsInfo);
